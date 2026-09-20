@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"net/mail"
 	"strings"
 	"time"
@@ -13,9 +11,7 @@ import (
 	"github.com/your-org/go-base/internal/domain/usecase/dto"
 )
 
-const (
-	passwordSaltSize = 16
-)
+const ()
 
 func buildUserResult(user entity.User) dto.UserResult {
 	return dto.UserResult{
@@ -24,8 +20,6 @@ func buildUserResult(user entity.User) dto.UserResult {
 		Phone:     user.Phone,
 		FullName:  user.FullName,
 		Role:      user.Role,
-		Avatar:    user.Avatar,
-		Birthdate: user.Birthdate,
 		Status:    user.Status,
 		LastLogin: user.LastLogin,
 	}
@@ -80,17 +74,8 @@ func parseOptionalDate(value *string) (*time.Time, error) {
 	return &parsed, nil
 }
 
-func generateSalt() (string, error) {
-	buffer := make([]byte, passwordSaltSize)
-	if _, err := rand.Read(buffer); err != nil {
-		return "", err
-	}
-
-	return hex.EncodeToString(buffer), nil
-}
-
-func hashPassword(password, salt string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password+salt), bcrypt.DefaultCost)
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
@@ -98,6 +83,6 @@ func hashPassword(password, salt string) (string, error) {
 	return string(bytes), nil
 }
 
-func comparePassword(hashedPassword, password, salt string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password+salt))
+func comparePassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }

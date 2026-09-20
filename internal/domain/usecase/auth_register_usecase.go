@@ -41,31 +41,18 @@ func (uc *registerUsecase) Do(ctx context.Context, req dto.RegisterRequest) (*dt
 		return nil, err
 	}
 
-	salt, err := generateSalt()
-	if err != nil {
-		return nil, fmt.Errorf("generate password salt: %w", err)
-	}
-
-	hashedPassword, err := hashPassword(req.Password, salt)
+	hashedPassword, err := hashPassword(req.Password)
 	if err != nil {
 		return nil, fmt.Errorf("hash password: %w", err)
 	}
 
-	birthdate, err := parseOptionalDate(req.Birthdate)
-	if err != nil {
-		return nil, http_error.BadRequestError("birthdate must use YYYY-MM-DD format")
-	}
-
 	user := &entity.User{
-		Email:        normalizedEmail,
-		Phone:        normalizeOptional(req.Phone),
-		FullName:     normalizeRequired(req.FullName),
-		Role:         req.Role,
-		Status:       entity.UserStatusActive,
-		Password:     hashedPassword,
-		PasswordSalt: salt,
-		Avatar:       req.Avatar,
-		Birthdate:    birthdate,
+		Email:    normalizedEmail,
+		Phone:    normalizeOptional(req.Phone),
+		FullName: normalizeRequired(req.FullName),
+		Role:     req.Role,
+		Status:   entity.UserStatusActive,
+		Password: hashedPassword,
 	}
 	if err := uc.userRepo.Create(ctx, user); err != nil {
 		return nil, fmt.Errorf("create user: %w", err)

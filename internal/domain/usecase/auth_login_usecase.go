@@ -48,7 +48,7 @@ func (uc *loginUsecase) Do(ctx context.Context, req dto.LoginRequest) (*dto.Logi
 		return nil, http_error.UnauthorizedError("user is inactive")
 	}
 
-	if err := comparePassword(user.Password, req.Password, user.PasswordSalt); err != nil {
+	if err := comparePassword(user.Password, req.Password); err != nil {
 		return nil, http_error.UnauthorizedError("invalid email or password")
 	}
 

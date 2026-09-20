@@ -56,12 +56,6 @@ func validateUpdateCurrentUserRequest(req dto.UpdateCurrentUserRequest) error {
 	if req.UserID == uuid.Nil {
 		return http_error.UnauthorizedError("missing authenticated user")
 	}
-	if req.Birthdate != nil {
-		if _, err := parseOptionalDate(req.Birthdate); err != nil {
-			return http_error.BadRequestError("birthdate must use YYYY-MM-DD format")
-		}
-	}
-
 	return nil
 }
 
@@ -73,12 +67,5 @@ func applyUpdateCurrentUserRequest(user *entity.User, req dto.UpdateCurrentUserR
 	}
 	if req.Phone != nil {
 		user.Phone = normalizeOptional(req.Phone)
-	}
-	if req.Avatar != nil {
-		user.Avatar = normalizeOptional(req.Avatar)
-	}
-	if req.Birthdate != nil {
-		birthdate, _ := parseOptionalDate(req.Birthdate)
-		user.Birthdate = birthdate
 	}
 }

@@ -26,9 +26,6 @@ CREATE TABLE IF NOT EXISTS users (
     full_name VARCHAR(150) NOT NULL,
     role SMALLINT NOT NULL DEFAULT 2,
     password TEXT NOT NULL,
-    password_salt VARCHAR(255) NOT NULL,
-    avatar TEXT,
-    birthdate DATE,
     status VARCHAR(20) NOT NULL DEFAULT 'active',
     last_login TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -71,15 +68,13 @@ INSERT INTO users (
     email,
     full_name,
     role,
-    password,
-    password_salt
+    password
 )
 VALUES (
     '00000000-0000-0000-0000-000000000001',
     'superadmin@superadmin.com',
     'Default Super Admin',
     0,
-    crypt('VoquocTH2001@@', gen_salt('bf')),
-    ''
+    crypt('VoquocTH2001@@', gen_salt('bf'))
 )
 ON CONFLICT (id) DO NOTHING;
