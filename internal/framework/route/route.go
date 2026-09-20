@@ -2,6 +2,7 @@ package route
 
 import (
 	"github.com/your-org/go-base/internal/config"
+	"github.com/your-org/go-base/internal/domain/entity"
 	"github.com/your-org/go-base/internal/infrastructure/handler"
 	middlewarepkg "github.com/your-org/go-base/pkg/middleware"
 
@@ -71,6 +72,7 @@ func NewRouter(
 		protectedGroup.Use(middlewarepkg.AuthRequired(jwtService))
 		{
 			userGroup := protectedGroup.Group("/users")
+			userGroup.Use(middlewarepkg.RequireRoles(entity.UserRoleSuperAdmin, entity.UserRoleAdmin, entity.UserRoleUser))
 			{
 				userGroup.GET("/me", userHandler.GetMe)
 				userGroup.PATCH("/me", userHandler.UpdateMe)
