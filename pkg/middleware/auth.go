@@ -26,7 +26,7 @@ func AuthRequired(jwtService JWT) gin.HandlerFunc {
 		}
 
 		claims := &AuthClaims{}
-		if err := jwtService.Decrypt(token, claims, false); err != nil {
+		if err := jwtService.Verify(token, claims); err != nil || claims.ExpiresAt <= 0 {
 			renderUnauthorized(ctx, "invalid access token")
 			return
 		}

@@ -20,8 +20,9 @@ type Config struct {
 
 	LogLevel string `envconfig:"LOG_LEVEL"`
 
-	JWTSecret string `envconfig:"JWT_SECRET"`
-	GRPCPort  string `envconfig:"GRPC_PORT" default:"50051"`
+	JWTPrivateKey string `envconfig:"JWT_PRIVATE_KEY"`
+	JWTPublicKey  string `envconfig:"JWT_PUBLIC_KEY"`
+	GRPCPort      string `envconfig:"GRPC_PORT" default:"50051"`
 
 	Database DatabaseConfig
 	CORS     CORS

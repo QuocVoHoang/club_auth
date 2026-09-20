@@ -14,3 +14,7 @@ product-service
 coverage.out
 dist/
 tmp/
+
+# JWT signing material
+jwt_private.pem
+jwt_public.pem

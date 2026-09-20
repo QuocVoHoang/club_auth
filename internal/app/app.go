@@ -57,7 +57,10 @@ func Run(cfg *config.Config) error {
 	}()
 
 	userRepo := postgres.NewUserRepository(db)
-	jwtService := middlewarepkg.NewJWT(cfg.JWTSecret)
+	jwtService, err := middlewarepkg.NewJWTFromPEM(cfg.JWTPrivateKey, cfg.JWTPublicKey)
+	if err != nil {
+		return fmt.Errorf("initialize JWT: %w", err)
+	}
 	registerUsecase := usecase.NewRegisterUsecase(userRepo, jwtService)
 	loginUsecase := usecase.NewLoginUsecase(userRepo, jwtService)
 	getCurrentUserUsecase := usecase.NewGetCurrentUserUsecase(userRepo)

@@ -78,7 +78,7 @@ func validateLoginRequest(req dto.LoginRequest) error {
 }
 
 func buildLoginResult(jwtService middlewarepkg.JWT, user entity.User) (*dto.LoginResult, error) {
-	token, err := jwtService.Encrypt(entity.AuthClaims{
+	token, err := jwtService.Sign(entity.AuthClaims{
 		UserID: user.ID.String(),
 		Email:  user.Email,
 		Role:   user.Role,

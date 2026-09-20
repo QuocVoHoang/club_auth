@@ -2,7 +2,7 @@
 DB_USER=clubdb
 DB_PASS=clubdb_password
 DB_HOST=localhost
-DB_PORT=5435
+DB_PORT=5432
 DB_NAME=clubdb
 DB_SSL_MODE=disable
 

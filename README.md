@@ -4,6 +4,18 @@ Base Go monolith service using Gin, clean architecture boundaries, PostgreSQL, G
 
 ## Development Setup
 
+JWT uses RS256: the auth service signs tokens with the private RSA key, while
+services verify them with the public key. Set `JWT_PRIVATE_KEY` and
+`JWT_PUBLIC_KEY` to the complete PEM strings. Values may contain real newlines
+or literal `\n` sequences:
+
+```bash
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out jwt_private.pem
+openssl pkey -in jwt_private.pem -pubout -out jwt_public.pem
+```
+
+Never commit the private key or expose it to services that only verify tokens.
+
 1. Create `.env` from `.env.example`.
 
 2. Start PostgreSQL with Docker Compose: `docker compose up -d`
