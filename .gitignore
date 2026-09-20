@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+local.env
+.DS_Store
+.idea/
+.vscode/
+vendor/
+
+/config/
+
+go-base-service
+product-service
+coverage.out
+dist/
+tmp/
