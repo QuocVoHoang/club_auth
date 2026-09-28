@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   pull_request:
@@ -7,25 +7,68 @@ on:
       - main
 
 jobs:
-  lint:
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-      
-      - name: Setup
+
+      - name: Setup Go
         uses: actions/setup-go@v7
         with:
-          go-version: '1.25'
-          go-version-file: 'go.mod'
-          cache-dependency-path: 'go.sum'
+          go-version-file: go.mod
           cache: true
 
-      - name: Install dependencies
+      - name: Check formatting
+        run: test -z "$(gofmt -l .)"
+
+      - name: Download dependencies
         run: go mod download
+
+      - name: Vet
+        run: go vet ./...
 
       - name: Test
         run: go test ./...
 
+  build:
+    name: Build
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Go
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
       - name: Build
-        run: go build ./...
+        run: go build -o app ./cmd/api
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          path: app
+
+  deploy:
+    name: Deploy
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app
+
+      - name: Deploy
+        run: |
+          echo "Deploy to server here"
