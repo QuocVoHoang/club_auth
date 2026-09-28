@@ -65,3 +65,4 @@ Notes:
 - The Swagger endpoint is registered at `/api/v1/doc/*any` in `internal/framework/route/route.go` using `github.com/swaggo/gin-swagger`.
 - Generated artifacts are stored in `internal/docs` (docs.go, swagger.json, swagger.yaml). Do not edit these manually; regenerate with `make gen`.
 - Ensure `ENV`, `PORT` and database settings in `.env` are correct before running.
+
