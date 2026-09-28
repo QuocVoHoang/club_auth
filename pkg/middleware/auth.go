@@ -36,7 +36,6 @@ func AuthRequired(jwtService JWT) gin.HandlerFunc {
 			renderUnauthorized(ctx, "invalid access token")
 			return
 		}
-		
 
 		infracontext.SetUserID(ctx, userID)
 		infracontext.SetToken(ctx, token)
