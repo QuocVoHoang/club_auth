@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net"
 	"net/http"
 	"os/signal"
 	"syscall"
@@ -14,14 +13,10 @@ import (
 	"github.com/your-org/go-base/internal/domain/usecase"
 	"github.com/your-org/go-base/internal/framework/route"
 	"github.com/your-org/go-base/internal/infrastructure/db/postgres"
-	grpcserver "github.com/your-org/go-base/internal/infrastructure/grpc"
-	gprcUser "github.com/your-org/go-base/internal/infrastructure/grpc/generated/user"
 	"github.com/your-org/go-base/internal/infrastructure/handler"
 	"github.com/your-org/go-base/internal/platform/database"
 	"github.com/your-org/go-base/pkg/log"
 	middlewarepkg "github.com/your-org/go-base/pkg/middleware"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 const (
@@ -68,13 +63,14 @@ func Run(cfg *config.Config) error {
 	authHandler := handler.NewAuthHandler(registerUsecase, loginUsecase)
 	userHandler := handler.NewUserHandler(getCurrentUserUsecase, updateCurrentUserUsecase)
 
-	grpcSrv := grpc.NewServer()
-	gprcUser.RegisterUserServiceServer(grpcSrv, grpcserver.NewUserServer(userRepo))
-	reflection.Register(grpcSrv)
-	grpcLis, err := net.Listen("tcp", ":"+cfg.GRPCPort)
-	if err != nil {
-		return fmt.Errorf("listen gRPC on :%s: %w", cfg.GRPCPort, err)
-	}
+	// gRPC is currently disabled. Keep this code commented for future re-enablement.
+	// grpcSrv := grpc.NewServer()
+	// gprcUser.RegisterUserServiceServer(grpcSrv, grpcserver.NewUserServer(userRepo))
+	// reflection.Register(grpcSrv)
+	// grpcLis, err := net.Listen("tcp", ":"+cfg.GRPCPort)
+	// if err != nil {
+	// 	return fmt.Errorf("listen gRPC on :%s: %w", cfg.GRPCPort, err)
+	// }
 
 	router := route.NewRouter(cfg, db, jwtService, authHandler, userHandler)
 	server := &http.Server{
@@ -92,10 +88,10 @@ func Run(cfg *config.Config) error {
 		serverErr <- server.ListenAndServe()
 	}()
 
-	go func() {
-		log.Infof("Starting %s gRPC in %s environment on port %s", cfg.AppName, cfg.ENV, cfg.GRPCPort)
-		serverErr <- grpcSrv.Serve(grpcLis)
-	}()
+	// go func() {
+	// 	log.Infof("Starting %s gRPC in %s environment on port %s", cfg.AppName, cfg.ENV, cfg.GRPCPort)
+	// 	serverErr <- grpcSrv.Serve(grpcLis)
+	// }()
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
@@ -112,7 +108,7 @@ func Run(cfg *config.Config) error {
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancel()
 
-	grpcSrv.GracefulStop()
+	// grpcSrv.GracefulStop()
 
 	if err := server.Shutdown(shutdownCtx); err != nil {
 		return fmt.Errorf("shutdown HTTP server: %w", err)
