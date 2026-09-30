@@ -2,9 +2,9 @@ name: Deploy
 
 on:
   pull_request:
+    branches: [ main ]
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 permissions:
   contents: read
@@ -20,7 +20,7 @@ env:
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: arc-football-auth
 
     steps:
       - name: Checkout
