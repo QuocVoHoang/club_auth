@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: football-auth
+  namespace: dev
+spec:
+  type: ClusterIP
+  selector:
+    app: football-auth
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
