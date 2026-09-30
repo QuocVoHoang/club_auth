@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: football-auth
-          image: ghcr.io/USERNAME/football-auth:latest
+          image: ghcr.io/quocvohoang/football_auth:latest
           ports:
             - name: http
               containerPort: 8080

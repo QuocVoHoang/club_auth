@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository }}
+  IMAGE_NAME: ghcr.io/quocvohoang/football_auth
 
 jobs:
   test:
@@ -82,10 +82,10 @@ jobs:
 
       - name: Update image
         run: |
-          kubectl set image deployment/backend \
-            backend=${{ env.IMAGE_NAME }}:${{ github.sha }} \
+          kubectl set image deployment/football-auth \
+            football-auth=${{ env.IMAGE_NAME }}:${{ github.sha }} \
             -n dev
 
       - name: Wait for rollout
         run: |
-          kubectl rollout status deployment/backend -n dev
+          kubectl rollout status deployment/football-auth -n dev
